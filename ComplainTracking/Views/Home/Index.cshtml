@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- specific page styles -->
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #0061f2 0%, #00ba94 100%);
+        color: white;
+        padding: 100px 0;
+        border-radius: 0 0 50px 50px;
+        margin-bottom: 50px;
+    }
+
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+    .icon-box {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+
+    .btn-light-custom {
+        background: white;
+        color: #0061f2;
+        font-weight: bold;
+        padding: 12px 30px;
+        border-radius: 30px;
+    }
+</style>
+
+<!-- Hero Header -->
+<div class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Complaint Tracking System</h1>
+        <p class="lead mb-4">We are here to listen. Submit your grievances or track the status of existing complaints with ease.</p>
+
+        <!-- Search Bar for Tracking -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form class="d-flex gap-2" role="search">
+                    <input class="form-control form-control-lg rounded-pill" type="search" placeholder="Enter Complaint ID to Track..." aria-label="Search">
+                    <button class="btn btn-light-custom" type="submit">Track</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Cards -->
+<div class="container mb-5">
+    <div class="row g-4 text-center">
+        <!-- Card 1 -->
+        <div class="col-md-4">
+            <div class="card feature-card p-4">
+                <div class="card-body">
+                    <div class="icon-box text-primary">
+                        <i class="bi bi-pencil-square"></i> <!-- Requires Bootstrap Icons -->
+                        📝
+                    </div>
+                    <h3 class="card-title">File a Complaint</h3>
+                    <p class="card-text text-muted">Submit a new grievance regarding any service or product issue.</p>
+                    <a href="#" class="btn btn-outline-primary rounded-pill stretched-link">Get Started</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4">
+            <div class="card feature-card p-4">
+                <div class="card-body">
+                    <div class="icon-box text-success">
+                        <i class="bi bi-search"></i>
+                        🔍
+                    </div>
+                    <h3 class="card-title">Check Status</h3>
+                    <p class="card-text text-muted">View the real-time progress of your submitted complaints.</p>
+                    <a href="#" class="btn btn-outline-success rounded-pill stretched-link">Check Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-4">
+            <div class="card feature-card p-4">
+                <div class="card-body">
+                    <div class="icon-box text-info">
+                        <i class="bi bi-question-circle"></i>
+                        ❓
+                    </div>
+                    <h3 class="card-title">Help Center</h3>
+                    <p class="card-text text-muted">Browse FAQs or contact support if you are facing technical issues.</p>
+                    <a href="#" class="btn btn-outline-info rounded-pill stretched-link">Get Help</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

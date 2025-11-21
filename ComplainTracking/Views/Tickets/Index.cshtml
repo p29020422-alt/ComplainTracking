@@ -1,0 +1,211 @@
+@model PaginatedResult<Ticket>
+
+@{
+    ViewData["Title"] = "Tickets";
+}
+
+<div class="container mt-4">
+
+    <!-- Track Ticket Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-search"></i> Track Ticket</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Details" method="get" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label">Enter Ticket ID</label>
+                    <input type="number" name="id" class="form-control" placeholder="e.g., 123" min="1" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-ticket-perforated"></i></span>
+                        <input type="text" class="form-control" placeholder="Title (optional)" name="title">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-arrow-right"></i> Track Ticket
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>My Tickets</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> New Ticket
+            </a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Dashboard" class="btn btn-info">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            }
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-light">
+            <div class="row">
+                <div class="col-md-6">
+                    <span>Total Tickets: <strong>@Model.TotalCount</strong></span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <form method="get" class="d-inline">
+                        <select name="sort" class="form-select form-select-sm d-inline" style="width: auto;" onchange="this.form.submit()">
+                            <option value="date" selected>Sort by Date</option>
+                            <option value="priority">Sort by Priority</option>
+                            <option value="status">Sort by Status</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Items.Count == 0)
+            {
+                <div class="alert alert-info">
+                    No tickets found. <a asp-action="Create">Create a new ticket</a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Submitter</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ticket in Model.Items)
+                            {
+                                <tr>
+                                    <td><strong>#@ticket.Id</strong></td>
+                                    <td>@ticket.Title</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(ticket.Category))
+                                        {
+                                            <span class="badge bg-secondary">@ticket.Category</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">N/A</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch (ticket.Priority)
+                                        {
+                                            case TicketPriority.Low:
+                                                <span class="badge bg-success">Low</span>
+                                                break;
+                                            case TicketPriority.Medium:
+                                                <span class="badge bg-warning">Medium</span>
+                                                break;
+                                            case TicketPriority.High:
+                                                <span class="badge bg-danger">High</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch (ticket.Status)
+                                        {
+                                            case TicketStatus.Opened:
+                                                <span class="badge bg-primary">Open</span>
+                                                break;
+                                            case TicketStatus.Assigned:
+                                                <span class="badge bg-info">Assigned</span>
+                                                break;
+                                            case TicketStatus.InProgress:
+                                                <span class="badge bg-warning">In Progress</span>
+                                                break;
+                                            case TicketStatus.Resolved:
+                                                <span class="badge bg-success">Resolved</span>
+                                                break;
+                                            case TicketStatus.Closed:
+                                                <span class="badge bg-secondary">Closed</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@ticket.Submitter?.Email</td>
+                                    <td>@ticket.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <div class="card-footer">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            @if (i == Model.PageNumber)
+                            {
+                                <li class="page-item active"><span class="page-link">@i</span></li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
+</div>

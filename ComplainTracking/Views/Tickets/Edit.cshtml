@@ -1,0 +1,100 @@
+@model Ticket
+
+@{
+    ViewData["Title"] = "Edit Ticket";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Edit Ticket #@Model.Id</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" novalidate>
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.SubmitterId)
+                        @Html.HiddenFor(m => m.CreatedAt)
+                        @Html.HiddenFor(m => m.AttachmentPath)
+                        @Html.HiddenFor(m => m.Status)
+                        @Html.HiddenFor(m => m.AssignedAgentId)
+                        @Html.HiddenFor(m => m.ClosedAt)
+
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Please fix the following errors:</strong>
+                                <ul class="mb-0">
+                                    @foreach (var modelState in ViewData.ModelState.Values)
+                                    {
+                                        @foreach (var error in modelState.Errors)
+                                        {
+                                            <li>@error.ErrorMessage</li>
+                                        }
+                                    }
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Category" class="form-label"></label>
+                                <input asp-for="Category" class="form-control" />
+                                <span asp-validation-for="Category" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Priority" class="form-label"></label>
+                                <select asp-for="Priority" class="form-select">
+                                    <option value="@TicketPriority.Low">Low</option>
+                                    <option value="@TicketPriority.Medium">Medium</option>
+                                    <option value="@TicketPriority.High">High</option>
+                                </select>
+                                <span asp-validation-for="Priority" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2 text-muted small">
+                            <div class="col-md-6">
+                                <strong>Created:</strong> @Model.CreatedAt.ToString("g")
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Last Updated:</strong> @(Model.UpdatedAt?.ToString("g") ?? "Never")
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="card-footer bg-light">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle"></i> Save Changes
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
